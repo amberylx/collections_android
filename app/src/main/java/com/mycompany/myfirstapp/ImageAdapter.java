@@ -1,7 +1,5 @@
 package com.mycompany.myfirstapp;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,55 +7,45 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
-    private Context mContext;
-
-    public ImageAdapter(Context c, Bitmap bitmap) {
-        mContext = c;
-        mThumbIds[0] = bitmap;
-    }
+    private static final String[] URLS = {
+            "http://10.0.2.2:8000/static/item_images/screenshot004.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot005.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot006.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot007.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot008.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot010.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot017.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot019.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot015.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot020.200x200.jpg",
+            "http://10.0.2.2:8000/static/item_images/screenshot016.200x200.jpg"
+    };
+    private final ImageDownloader imageDownloader = new ImageDownloader();
 
     public int getCount() {
-        return mThumbIds.length;
+        return URLS.length;
     }
 
     public Object getItem(int position) {
-        return mThumbIds[position];
+        return URLS[position];
     }
 
     public long getItemId(int position) {
-        return 0;
+        return URLS[position].hashCode();
     }
 
-    // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
-        } else {
-            imageView = (ImageView) convertView;
+    public View getView(int position, View view, ViewGroup parent) {
+        if (view == null) {
+            view = new ImageView(parent.getContext());
+            view.setLayoutParams(new GridView.LayoutParams(200, 200));
+            view.setPadding(8, 8, 8, 8);
         }
+        imageDownloader.download(URLS[position], (ImageView)view);
 
-        imageView.setImageBitmap(mThumbIds[position]);
-        return imageView;
+        return view;
     }
 
-    // references to our images
-    private Bitmap[] mThumbIds = new Bitmap[1];
-/*    private Integer[] mThumbIds = {
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7
-    };*/
+    public ImageDownloader getImageDownloader() {
+        return imageDownloader;
+    }
 }

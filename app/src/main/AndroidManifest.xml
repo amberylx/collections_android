@@ -25,14 +25,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mycompany.myfirstapp.MyActivity" />
         </activity>
-        <activity
-            android:name=".ImageLoad"
-            android:label="@string/title_activity_display_collection"
-            android:parentActivityName=".MyActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mycompany.myfirstapp.MyActivity" />
-        </activity>
     </application>
 
 </manifest>

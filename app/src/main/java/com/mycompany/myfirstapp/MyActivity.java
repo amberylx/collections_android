@@ -57,7 +57,7 @@ public class MyActivity extends ActionBarActivity {
     }
 
     public void sendMessage(View view) {
-        new CallAPI().execute("");
+        new CallAPI().execute("http://10.0.2.2:8000/api/collection/");
     }
 
     private static void disableConnectionReuseIfNecessary() {
@@ -76,10 +76,9 @@ public class MyActivity extends ActionBarActivity {
         @Override
         protected JSONObject doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
-            String serviceUrl = "http://10.0.2.2:8000/api/collection/";
 
             try {
-                URL urlToRequest = new URL(serviceUrl);
+                URL urlToRequest = new URL(params[0]);
                 urlConnection = (HttpURLConnection)urlToRequest.openConnection();
                 urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
                 urlConnection.setReadTimeout(DATARETRIEVAL_TIMEOUT);
@@ -110,30 +109,7 @@ public class MyActivity extends ActionBarActivity {
         }
 
         protected void onPostExecute(JSONObject result) {
-            new LoadImageFromURL((ImageView) findViewById(R.id.my_image))
-                    .execute("http://10.0.2.2:8000/static/item_images/screenshot004.200x200.jpg");
-        }
-    }
-
-    private class LoadImageFromURL extends AsyncTask<String, Void, Bitmap> {
-        public LoadImageFromURL(ImageView bmImage) {
-        }
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-
-            return mIcon11;
-        }
-        protected void onPostExecute(Bitmap result) {
             Intent intent = new Intent(getApplicationContext(), DisplayCollectionActivity.class);
-            intent.putExtra(EXTRA_BMP, result);
             startActivity(intent);
         }
     }
