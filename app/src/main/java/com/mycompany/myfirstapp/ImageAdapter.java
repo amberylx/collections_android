@@ -14,9 +14,7 @@ public class ImageAdapter extends BaseAdapter {
             "http://10.0.2.2:8000/static/item_images/screenshot007.200x200.jpg",
             "http://10.0.2.2:8000/static/item_images/screenshot008.200x200.jpg",
             "http://10.0.2.2:8000/static/item_images/screenshot010.200x200.jpg",
-            "http://10.0.2.2:8000/static/item_images/screenshot017.200x200.jpg",
             "http://10.0.2.2:8000/static/item_images/screenshot019.200x200.jpg",
-            "http://10.0.2.2:8000/static/item_images/screenshot015.200x200.jpg",
             "http://10.0.2.2:8000/static/item_images/screenshot020.200x200.jpg",
             "http://10.0.2.2:8000/static/item_images/screenshot016.200x200.jpg"
     };

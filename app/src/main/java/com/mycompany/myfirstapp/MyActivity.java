@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,10 +25,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class MyActivity extends ActionBarActivity {
-    public final static String EXTRA_BMP = "com.mycompany.myfirstapp.BMP";
+    public final static String EXTRA_URLS = "com.mycompany.myfirstapp.URLS";
     public final static Integer CONNECTION_TIMEOUT = 10000;
     public final static Integer DATARETRIEVAL_TIMEOUT = 10000;
     private static final String TAG = MyActivity.class.getSimpleName();
@@ -66,49 +70,32 @@ public class MyActivity extends ActionBarActivity {
         }
     }
 
-    private static String getResponseText(InputStream inStream) {
-        // very nice trick from
-        // http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
-        return new Scanner(inStream).useDelimiter("\\A").next();
-    }
-
     private class CallAPI extends AsyncTask<String, String, JSONObject> {
         @Override
         protected JSONObject doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-
-            try {
-                URL urlToRequest = new URL(params[0]);
-                urlConnection = (HttpURLConnection)urlToRequest.openConnection();
-                urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
-                urlConnection.setReadTimeout(DATARETRIEVAL_TIMEOUT);
-
-                int statusCode = urlConnection.getResponseCode();
-                System.out.println(statusCode);
-                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                } else if (statusCode != HttpURLConnection.HTTP_OK) {
-                }
-
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                return new JSONObject(getResponseText(in));
-            } catch (MalformedURLException e) {
-                System.out.println(e);
-            } catch (SocketTimeoutException e) {
-                System.out.println(e);
-            } catch (JSONException e) {
-                System.out.println(e);
-            } catch (IOException e) {
-                System.out.println(e);
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-
-            return null;
+            ApiCaller ac = new ApiCaller(params[0]);
+            return ac.callAPI();
         }
 
         protected void onPostExecute(JSONObject result) {
+            List<JSONObject> itemlist = new ArrayList<JSONObject>();
+            List<String> urllist = new ArrayList<String>();
+            try {
+                JSONArray array = result.getJSONArray("items");
+
+                for (int i=0; i<array.length(); i++) {
+                    JSONObject item = array.getJSONObject(i);
+                    itemlist.add(item);
+
+                    String url = item.getJSONArray("images").getJSONObject(0).getString("image");
+                    urllist.add(url);
+                }
+            } catch (JSONException e) {
+                System.out.println(e);
+            }
+
+            System.out.println(urllist);
+
             Intent intent = new Intent(getApplicationContext(), DisplayCollectionActivity.class);
             startActivity(intent);
         }
