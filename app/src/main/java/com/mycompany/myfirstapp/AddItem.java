@@ -1,51 +1,40 @@
 package com.mycompany.myfirstapp;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 
-public class MyActivity extends Activity {
-    public final static String EXTRA_URLS = "com.mycompany.myfirstapp.URLS";
-    public final static Integer CONNECTION_TIMEOUT = 10000;
-    public final static Integer DATARETRIEVAL_TIMEOUT = 10000;
-    private static final String TAG = MyActivity.class.getSimpleName();
-
+public class AddItem extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        setContentView(R.layout.activity_add_item);
+    }
+
+    public void addApiSubmit(View view) {
+        String title = "";
+        String text = "";
+        title = ((EditText)findViewById(R.id.item_title)).getText().toString();
+        text = ((EditText)findViewById(R.id.item_text)).getText().toString();
+        new CallAPI().execute("http://10.0.2.2:8000/api/item_add/", title, text);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_activity_actions, menu);
         return true;
     }
@@ -61,29 +50,23 @@ public class MyActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void viewCollection(View view) {
-        new CallAPI().execute("http://10.0.2.2:8000/api/collection/");
-    }
-
-    public void addItem(View view) {
-        Intent intent = new Intent(getApplicationContext(), AddItem.class);
-        startActivity(intent);
-    }
-
-    private static void disableConnectionReuseIfNecessary() {
-        if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
-            System.setProperty("http.keepAlive", "false");
-        }
-    }
-
     private class CallAPI extends AsyncTask<String, String, JSONObject> {
+        HashMap<String, String> postParameters = new HashMap<String, String>();
+
         @Override
         protected JSONObject doInBackground(String... params) {
-            ApiCaller ac = new ApiCaller(params[0]);
-            return ac.makeGetRequest();
+            postParameters.put("title", params[1]);
+            postParameters.put("text", params[2]);
+            postParameters.put("collection", "1");
+            postParameters.put("times_collected", "1");
+            postParameters.put("active", "1");
+            ApiCaller ac = new ApiCaller(params[0], postParameters);
+            return ac.makePostRequest();
         }
 
         protected void onPostExecute(JSONObject result) {
+            System.out.println("******onpostexecute");
+            /*
             List<JSONObject> itemlist = new ArrayList<JSONObject>();
             List<String> urllist = new ArrayList<String>();
             try {
@@ -101,7 +84,7 @@ public class MyActivity extends Activity {
             }
 
             Intent intent = new Intent(getApplicationContext(), DisplayCollectionActivity.class);
-            startActivity(intent);
+            startActivity(intent);*/
         }
     }
 }

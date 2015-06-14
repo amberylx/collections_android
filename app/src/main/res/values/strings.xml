@@ -3,7 +3,13 @@
 
     <string name="action_settings">Settings</string>
     <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
+    <string name="button_collection">View Collection</string>
+    <string name="button_add_item">Add Item</string>
     <string name="title_activity_display_collection">My Collection</string>
+    <string name="title_activity_add_item">Add Item</string>
     <string name="action_search">Search</string>
+    <string name="item_title_hint">Item Title</string>
+    <string name="item_title_label">Item Title</string>
+    <string name="item_text_hint">Item Text</string>
+    <string name="item_text_label">Item Text</string>
 </resources>
